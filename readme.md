@@ -89,15 +89,130 @@ yarn start
 
 **setup react native hooks**
 
+code below is from [react-native-community repo](https://github.com/react-native-community/react-native-template-typescript) and [this issue from template].(https://github.com/react-native-community/react-native-template-typescript/issues/72#issuecomment-541288488)
+
 ```bash
 # ! Not working
 npm i -g react-native-cli
 
-# 
+# ! Working : uninstall legacy CLI and install newer version
 npm uninstall --global react-native-cli
 npm install --global @react-native-community/cli
 
 ## initialize new project
 react-native init MyAwesomeProject --template typescript
 ```
+
+App.tsx
+
+```typescript
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+} from 'react-native';
+
+import {
+  Colors,
+} from 'react-native/Libraries/NewAppScreen';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <View style={styles.sectionContainer}>
+      <Text style={styles.sectionTitle}>Step One</Text>
+      <Text style={styles.sectionDescription}>
+        Edit <Text style={styles.highlight}>App.tsx</Text> to change
+        this screen and then come back to see your edits.
+              </Text>
+      <Text style={styles.sectionDescription}>{count}</Text>
+      <Button title="increment" onPress={() => setCount(count + 1)}/>
+    </View>
+  )
+}
+
+export default App;
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    color: Colors.dark,
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+});
+
+export default App;
+```
+
+*ios file build (macOS)*
+
+...faced glog issue: solved with [this issue](https://github.com/facebook/react-native/issues/25561#issuecomment-526793836).
+
+```bash
+cd ios
+pod install
+cd ..
+```
+
+from project root directory, open two bash terminals
+
+```bash
+npm start
+```
+
+```bash
+npm run ios
+```
+
+*android file build (windows)*
+
+add to PATH:
+
+```
+# tools
+C:\Users\<사용자이름>\AppData\Local\Android\sdk\tools
+
+# platform-tools
+C:\Users\<사용자이름>\AppData\Local\Android\sdk\platform-tools
+```
+
+to check if path setting is done:
+
+```bash
+# input
+adb
+
+# output
+Android Debug Bridge version 1.0.41
+...
+```
+
+before running project, android studio and virtual device should be open first.
+
+![img02](./assets/02.png)
+
+
+run project
+
+```bash
+npm run android
+```
+
+---
 
