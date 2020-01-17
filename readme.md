@@ -84,3 +84,20 @@ yarn start
 ```
 
 ---
+
+## 02
+
+**setup react native hooks**
+
+```bash
+# ! Not working
+npm i -g react-native-cli
+
+# 
+npm uninstall --global react-native-cli
+npm install --global @react-native-community/cli
+
+## initialize new project
+react-native init MyAwesomeProject --template typescript
+```
+
