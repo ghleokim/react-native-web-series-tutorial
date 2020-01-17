@@ -216,3 +216,186 @@ npm run android
 
 ---
 
+03
+
+**connect react-native-web with `common/`**
+
+folder structure
+
+```bash
+root/
+  packages/
+    app/ # original: myApp (react-native)
+    web/ # original: my-app (react-native-web)
+```
+
+in root directory, initialize yarn workspace
+
+```bash
+npm init -y
+```
+
+modify `/package.json` to make yarn work and find packages from defined directories
+
+```json
+{
+  "private": true,
+  "name": ...
+  ...,
+  "workspaces": [
+    "packages/*
+  ]
+}
+```
+
+remove all preinstalled `node_modules` inside `packages/`
+
+```bash
+rm -rf packages/*/node_modules
+```
+
+make directory named `common/` in packages and init as yarn workspace.
+
+```bash
+cd packages
+mkdir common && cd common
+npm init -y # makes package.json inside common/
+```
+
+in `common/package.json` change repo name from `common` to `@[reponame]/common/`
+
+```json
+// package.json
+{
+  ...
+  "name": "@leorep/common",
+  ...
+}
+```
+
+make `common/src/index.tsx` in `common` and copy from `app/App.tsx`
+
+```
+common/
+  src/
+    index.tsx # copied from app/App.tsx
+```
+
+install react-native and react in `common/`
+
+```bash
+yarn add react-native react
+```
+
+make `tsconfig.json` in `common/`, copy from `web/tsconfig.json` and make some changes
+
+```json
+// tsconfig.json
+{
+    "compilerOptions": {
+      "target": "es5",
+      "lib": [
+        "dom",
+        "dom.iterable",
+        "esnext"
+      ],
+      "allowJs": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "commonjs",     // change module to commonjs
+      "outDir": "dist",         // add out directory
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "declaration": true,      // make declaration true: d.ts
+      "jsx": "react"
+    },
+    "include": [
+      "src"
+    ]
+  }
+```
+
+modify `common/package.json`
+
+```json
+{
+  ...
+  "main": "dist/index.js",
+  "scripts" : {
+    "build": "tsc"
+  }
+}
+```
+
+transpile tsx file into js and output file to directory `common/dist`
+
+```bash
+yarn build
+```
+
+then, `dist/index.d.ts`, `dist/index.js` comes out.
+
+
+
+go to `web/package.json` and add dependencies for repo `common`
+
+```json
+{
+  ...
+  "dependencies": {
+    "@[username]/common": "1.0.0",
+    ...
+  }
+  ...
+}
+```
+
+install package inside `web/`
+
+```bash
+cd web
+yarn
+```
+
+delete everything from `web/src/App.tsx`, and import app from `@[username]/common`
+
+
+
+*(is this needed?)*
+
+```bash
+yarn add cross-env
+```
+
+modify `scripts` in `web/package.json`
+
+```json
+{
+  ...
+  "start": "cross-env SKIP_PREFLIGHT_CHECK=true react-scripts start"
+  ...
+}
+```
+
+*finish (is this needed?)*
+
+
+then in web: `yarn start`
+
+```bash
+#rm -rf dist and tsc
+rimraf dist && tsc
+```
+
+*important things to remeber*
+
+- check module `@[reponame]/common` : `ls node_modules/@[reponame]` in project root directory
+- main source in common: `"main": "dist/index.js"` in `common/package.json`
+- `rimraf dist && tsc` : delete dist folder everytime we build tsx file from common
+- `common/tsconfig.json` : check `"jsx": "react"`,  `"module": "commonjs"`, `"declaration": true`, `"include": ["src"]`
+
+---
+
