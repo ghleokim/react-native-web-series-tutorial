@@ -399,3 +399,67 @@ rimraf dist && tsc
 
 ---
 
+## 04
+
+**connect react-native app with `common/`**
+
+**nohoist** setting inside yarn workspace `app/package.json`. react-native dependency finds the module from itself, not the root.
+
+and delete node_modules and reinstll.
+
+```json
+{
+  ...
+  "workspaces": {
+    "nohoist": [
+      "react-native",
+      "react-native/**",
+      
+      ]
+  }
+  ...
+}
+```
+
+handling symlinks. : important
+
+wml is one of libraries that links dependent local library-using watchman.
+
+[wml repo link](https://github.com/wix/wml)
+
+```bash
+# install wml and watchman
+npm install -g wml
+brew install watchman
+```
+
+in `app/`, make wml to track the changes in the library `common/`
+
+```bash
+# wml add [local directory] ./node_modules/[name of package]
+wml add ../common ./node_modules/@leorep/common
+```
+
+*run*
+
+0. in `common/`, build `.tsx` file into `.js`
+
+```bash
+yarn build    # rimraf dist && tsc
+```
+
+1. make wml to watch library `common/`
+
+```bash
+wml start
+```
+
+2. opne new terminal, and in `app/`, run ios with yarn
+
+```bash
+yarn run ios  # this opens ios simulator
+```
+
+* if the `yarn run ios` does not go well, delete `app/ios/build` folder to clear the cache and run again.
+
+---
