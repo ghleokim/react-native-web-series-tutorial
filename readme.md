@@ -463,3 +463,167 @@ yarn run ios  # this opens ios simulator
 * if the `yarn run ios` does not go well, delete `app/ios/build` folder to clear the cache and run again.
 
 ---
+
+## 05
+
+**Using Mobx with React Hooks**
+
+By using Mobx, we can manage states without using props.(like redux)
+
+inside `common/`, install `mobx-react-lite` and `mobx`
+
+```bash  
+# 2020-01-18: using mobx-react-lite@1.5.2, mobx@5.15.2
+yarn add mobx-react-lite mobx
+```
+
+make directory `stores/` in `common/src/` and make a file `CounterStore.ts`
+
+```
+common/src/
+  index.tsx
+  stores/
+    CounterStore.ts
+```
+
+make class CounterStore in `CounterStore.ts`
+
+```typescript
+import { observable } from 'mobx';
+
+class CounterStore {
+  @observable count = 0;
+}
+```
+
+go to `tsconfig.json` and set `experimentalDecorators` to `true` inside the compiler options, and then the error in `CounterStore.ts` will be gone.
+
+```json
+...
+"experimentalDecorators": true,
+...
+```
+
+add export to `CounterStore.ts`
+
+```typescript
+...
+import { createContext } from 'react';
+
+...
+
+export const CounterStoreContext = createContext(new CounterStore());
+```
+
+go to `index.tsx` and wrap `App` with an `observer` from `mobx-react-lite`
+
+```typescript
+...
+import { observer } from 'mobx-react-lite';
+
+/* before : 
+*   export const App = () => {
+*     ...
+*   }
+*/
+
+export const App = observer(() => {
+  ...
+})
+```
+
+add `counterStoreContext` and replace `count` to `counterStore.count`
+
+```typescript
+...
+import React, { useContext } from 'react'
+import { CounterStoreContext } from './stores/CounterStore'
+
+export const App = observer(() => {
+  const counterStore = useContext(CounterStoreContext);
+
+  return (
+    ...
+      <Text>{counterStore.count}</Text>
+      <Button title="increment" onPress={() => counterStore.count++}/>
+    ...
+  )
+})
+```
+
+add script `watch` to `package.json` to make constant compiling during development.
+
+```json
+// package.json
+...
+scripts: {
+  ...
+  "watch": "tsc --watch"
+}
+...
+```
+
+make a new store called `workoutStore.ts` in `store/`, and declare a class
+
+```typescript
+class WorkoutStore {  
+  currentSquat: number;
+  currentBenchPress: number;
+  currentShoulderPress: number;
+  currentDeadlift: number;
+  currentSitup: number;
+}
+```
+
+this would make an error because of initialization, and we can detour it by making `strict` option in `tsconfig.json`.
+
+```json
+// tsconfig.json
+...
+  "strict": false,
+...
+```
+
+back to WorkoutStore.ts, define a type and an interface(dictionary), then export it.
+
+```typescript
+import { createContext } from 'react'
+
+type workoutType = 'a' | 'b'
+
+interface workoutHistory {
+  [key: string] : Array<{
+    exercise: string,
+    value: number
+  }>
+}
+
+/* an example for the history object
+{
+  '02-18-2019' : [
+    {
+      excercise: 'squat',
+      value: 90
+    },
+    {
+      excercise: 'benchpress',
+      value: 100
+    }
+  ]  
+}
+*/
+
+class WorkoutStore {
+  ...
+
+  // define a type 
+  lastWorkoutType: WorkoutType;
+
+  // make a dictionary where date is the key,
+  history: WorkoutHistory;
+}
+
+export const WorkoutStoreContext = createContext(new WorkoutStore());
+```
+
+---
