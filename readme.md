@@ -100,7 +100,7 @@ npm uninstall --global react-native-cli
 npm install --global @react-native-community/cli
 
 ## initialize new project
-react-native init MyAwesomeProject --template typescript
+react-native init MyAwesomeProject --template react-native-template-typescript
 ```
 
 App.tsx
