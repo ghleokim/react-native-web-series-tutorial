@@ -628,4 +628,60 @@ export const WorkoutStoreContext = createContext(new WorkoutStore());
 
 ---
 
-06
+## 06
+
+**Navigation in React Native Web**
+
+instead of using React-Navigation, the youtube video uses Mobx to track the state of current page and simply route the page.
+
+1. Add a Store that tracks current page.
+
+`src/stores/RouterStore.ts`
+
+```typescript
+import { observable } from "mobx";
+import { createContext } from "react";
+
+type Routes = "WorkoutHistory"
+
+class RouterStore {
+  @observable screen = "WorkoutHistory";
+}
+
+export const RouterStoreContext = createContext(new RouterStore());
+```
+
+2. add a file that routes components.
+
+`src/Router.tsx`
+
+```typescript
+import * as React from "react";
+import { observer } from "mobx-react-lite";
+import { useContext } from "react";
+import { CurrentWorkouts } from "./modules/CurrentWorkouts";
+import { WorkoutHistory } from "./modules/WorkoutHistory";
+import { RouterStoreContext } from "./stores/RouterStore";
+
+export const Router = observer(() => {
+  const RouterStore = useContext(RouterStoreContext);
+
+  return RouterStore.screen === 'WorkoutHistory' ? <WorkoutHistory /> : <CurrentWorkouts />
+})
+```
+
+3. Add the router in index.tsx
+
+`src/Index.tsx`
+
+```typescript
+...
+  return (
+    ...
+    <Router />
+    ...
+  )
+...
+```
+
+s

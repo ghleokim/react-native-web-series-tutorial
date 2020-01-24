@@ -25,14 +25,6 @@ export const App = observer(() => {
   return (
     <View style={styles.sectionContainer}>
       <Router />
-      <Text style={styles.sectionTitle}>Step One</Text>
-      <Text style={styles.sectionDescription}>
-        Edit <Text style={styles.highlight}>App.tsx</Text> to change
-        this screen and then come back to see your edits.
-              </Text>
-      <Text style={styles.sectionDescription}>{counterStore.count}</Text>
-      <Button title="increment" onPress={() => counterStore.count++}/>
-      <Button title="decrement" onPress={() => counterStore.count--}/>
     </View>
   )
 })

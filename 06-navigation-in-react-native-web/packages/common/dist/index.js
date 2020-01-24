@@ -20,17 +20,11 @@ var react_1 = __importStar(require("react"));
 var react_native_1 = require("react-native");
 var mobx_react_lite_1 = require("mobx-react-lite");
 var CounterStore_1 = require("./stores/CounterStore");
+var Router_1 = require("./Router");
 exports.App = mobx_react_lite_1.observer(function () {
     var counterStore = react_1.useContext(CounterStore_1.CounterStoreContext);
     return (react_1.default.createElement(react_native_1.View, { style: styles.sectionContainer },
-        react_1.default.createElement(react_native_1.Text, { style: styles.sectionTitle }, "Step One"),
-        react_1.default.createElement(react_native_1.Text, { style: styles.sectionDescription },
-            "Edit ",
-            react_1.default.createElement(react_native_1.Text, { style: styles.highlight }, "App.tsx"),
-            " to change this screen and then come back to see your edits."),
-        react_1.default.createElement(react_native_1.Text, { style: styles.sectionDescription }, counterStore.count),
-        react_1.default.createElement(react_native_1.Button, { title: "increment", onPress: function () { return counterStore.count++; } }),
-        react_1.default.createElement(react_native_1.Button, { title: "decrement", onPress: function () { return counterStore.count--; } })));
+        react_1.default.createElement(Router_1.Router, null)));
 });
 var styles = react_native_1.StyleSheet.create({
     engine: {
